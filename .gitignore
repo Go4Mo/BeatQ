@@ -1,3 +1,4 @@
 .DS_Store
 BeatQ/
 .vscode/
+__pycache__

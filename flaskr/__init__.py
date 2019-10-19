@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask
+from flask import Flask, render_template
 
 
 def create_app(test_config=None):
@@ -30,7 +30,7 @@ def create_app(test_config=None):
         return 'Hello, World!'
     
     @app.route('/helloWorld')
-    def hello():
+    def helloWorld():
         return render_template('index.html')
 
     return app
