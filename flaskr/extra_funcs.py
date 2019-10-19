@@ -1,12 +1,11 @@
 import random
 import string
 
-'''
-This function generates a random code for a given host session 
-=> join code
-'''
-
 def rand_code():
+    '''
+    This function generates a random code for a given host session 
+    => join code
+    '''
     code = ""
 
     upper = list(string.ascii_uppercase)
