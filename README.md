@@ -1,7 +1,7 @@
 # BeatQ
 Welcome to BeatQ, a application that allows you and your friends to easily share music.
 
-**What is it us
+By utilizing the spotify API, we allow users to collabaorate 
 
 ## Running Locally 
 1. pip3 install virtualenv
