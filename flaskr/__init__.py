@@ -1,6 +1,6 @@
 import os
 import requests
-from flask import Flask, render_template,redirect,request
+from flask import Flask, render_template, redirect, request
 
 
 def create_app(test_config=None):
@@ -32,6 +32,14 @@ def create_app(test_config=None):
     def about():
         return render_template('about.html')
     
+    @app.route('/join')
+    def join():
+        return render_template('join.html')
+
+    @app.route('/join_data')
+    def join_data():
+        pass
+    
     @app.route('/spotifyAuth')
     def spotifyAuth():
         oauthUrl = 'https://accounts.spotify.com/authorize'
@@ -54,8 +62,5 @@ def create_app(test_config=None):
         print(res.json())
         return render_template('host.html')
     
-    @app.route('/join')
-    def join():
-        return render_template('join.html')
 
     return app
