@@ -23,7 +23,7 @@ def create_app(test_config=None):
         os.makedirs(app.instance_path)
     except OSError:
         pass
-    
+
     # a simple page that says hello
     @app.route('/hello')
     def hello():
@@ -31,6 +31,6 @@ def create_app(test_config=None):
     
     @app.route('/helloWorld')
     def hello():
-        return render_template('index2.html')
+        return render_template('index.html')
 
     return app
