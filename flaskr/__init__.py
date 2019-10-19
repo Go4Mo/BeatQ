@@ -29,7 +29,7 @@ def create_app(test_config=None):
     def hello():
         return 'Hello, World!'
     
-    @app.route('/helloWorld')
+    @app.route('/')
     def helloWorld():
         return render_template('index.html')
 
