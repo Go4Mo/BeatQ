@@ -30,7 +30,12 @@ def create_app(test_config=None):
         return 'Hello, World!'
     
     @app.route('/')
-    def helloWorld():
-        return render_template('index.html')
+    def index():
+        return render_template('home.html')
+    
+    @app.route('/about')
+    def about():
+        return render_template('about.html')
+    
 
     return app
