@@ -1,8 +1,4 @@
 # BeatQ
-DemonHacks Project 
+A music-sharing project designed to allow people to both share and listen to music by allowing diffrent users to queue up music. 
 
-# Contributos 
-Vijay
-Bradley
-Sanjeev
-Mo
+**Contributors:** Mohamed Bah, Vijay Bharadwaj, Sanjeev Lingam, Bradley Bottomlee
