@@ -40,5 +40,8 @@ def create_app(test_config=None):
     @app.route('/host')
     def host():
         return render_template('host.html')
+    @app.route('/join')
+    def join():
+        return render_template('join.html')
 
     return app
