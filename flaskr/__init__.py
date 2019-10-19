@@ -32,6 +32,7 @@ def create_app(test_config=None):
     def about():
         return render_template('about.html')
     
+<<<<<<< HEAD
     @app.route('/spotifyAuth')
     def spotifyAuth():
         oauthUrl = 'https://accounts.spotify.com/authorize'
@@ -54,6 +55,11 @@ def create_app(test_config=None):
         print(res.json())
         return render_template('home.html')
         
+=======
+    @app.route('/host')
+    def host():
+        return render_template('host.html')
+>>>>>>> b509a11e48e3aa491e66602abcc8bd73ec391457
     @app.route('/join')
     def join():
         return render_template('join.html')
