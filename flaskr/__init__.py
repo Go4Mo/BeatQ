@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 
 
 def create_app(test_config=None):
@@ -23,12 +23,7 @@ def create_app(test_config=None):
         os.makedirs(app.instance_path)
     except OSError:
         pass
-
-    # a simple page that says hello
-    @app.route('/hello')
-    def hello():
-        return 'Hello, World!'
-    
+ 
     @app.route('/')
     def index():
         return render_template('home.html')
@@ -37,5 +32,25 @@ def create_app(test_config=None):
     def about():
         return render_template('about.html')
     
+    @app.route('/spotifyAuth')
+    def spotifyAuth():
+        oauthUrl = 'https://accounts.spotify.com/authorize'
+        oauthUrl += '?response_type=code'
+        oauthUrl += '&client_id=32a33ef6be6f484aa7af70dbc0a8be74'
+        oauthUrl += '&redirect_uri=http://localhost:5000/spotifyCallback'
+        oauthUrl += '&scope=user-library-method'
+        return redirect(oauthUrl,code=302)
 
+    @app.route('/spotifyCallback', methods=['GET','POST'])
+    def spotifyAuthCallback():
+        code = request.args.get('code')
+        tokenUrl = 'https://id.twitch.tv/oauth2/token'
+        tokenUrl += '?client_id=32a33ef6be6f484aa7af70dbc0a8be74'
+        tokenUrl += '&client_secret=8c68f3903c78478ea18f9d18a79c7d13'
+        tokenUrl += '&code='+code
+        tokenUrl += '&grant_type=authorization_code'
+        tokenUrl += '&redirect_uri=http://localhost:5000/spotifyCallback'
+        res = requests.post(tokenUrl)
+        print(res.json())
+        return render_template('home.html')
     return app
