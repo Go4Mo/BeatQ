@@ -1,6 +1,6 @@
 import os
-
-from flask import Flask, render_template, request
+import requests
+from flask import Flask, render_template,redirect,request
 
 
 def create_app(test_config=None):
@@ -32,34 +32,28 @@ def create_app(test_config=None):
     def about():
         return render_template('about.html')
     
-<<<<<<< HEAD
     @app.route('/spotifyAuth')
     def spotifyAuth():
         oauthUrl = 'https://accounts.spotify.com/authorize'
         oauthUrl += '?response_type=code'
         oauthUrl += '&client_id=32a33ef6be6f484aa7af70dbc0a8be74'
         oauthUrl += '&redirect_uri=http://localhost:5000/spotifyCallback'
-        oauthUrl += '&scope=user-library-method'
         return redirect(oauthUrl,code=302)
 
     @app.route('/spotifyCallback', methods=['GET','POST'])
     def spotifyAuthCallback():
         code = request.args.get('code')
-        tokenUrl = 'https://id.twitch.tv/oauth2/token'
-        tokenUrl += '?client_id=32a33ef6be6f484aa7af70dbc0a8be74'
-        tokenUrl += '&client_secret=8c68f3903c78478ea18f9d18a79c7d13'
-        tokenUrl += '&code='+code
-        tokenUrl += '&grant_type=authorization_code'
-        tokenUrl += '&redirect_uri=http://localhost:5000/spotifyCallback'
-        res = requests.post(tokenUrl)
+        tokenUrl = 'https://accounts.spotify.com/api/token'
+        data = {'grant_type':'authorization_code',
+                'code':code,
+                'redirect_uri':'http://localhost:5000/spotifyCallback',
+                'client_id':'32a33ef6be6f484aa7af70dbc0a8be74',
+                'client_secret':'8c68f3903c78478ea18f9d18a79c7d13'
+        }
+        res = requests.post(tokenUrl,data=data)
         print(res.json())
-        return render_template('home.html')
-        
-=======
-    @app.route('/host')
-    def host():
         return render_template('host.html')
->>>>>>> b509a11e48e3aa491e66602abcc8bd73ec391457
+    
     @app.route('/join')
     def join():
         return render_template('join.html')

@@ -1,4 +1,6 @@
 {% extends "index.html" %}
 {% block content %}
-<button type="button" class="btn btn-success btn-outline-success btn-lg">Authenticate Spotify</button>
+<form action = "{{ url_for('about') }}">
+    <button type="button" class="btn btn-success btn-outline-success btn-lg">Authenticate Spotify</button>
+</form>
 {% endblock content %}
