@@ -53,4 +53,9 @@ def create_app(test_config=None):
         res = requests.post(tokenUrl)
         print(res.json())
         return render_template('home.html')
+        
+    @app.route('/join')
+    def join():
+        return render_template('join.html')
+
     return app
