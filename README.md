@@ -1,7 +1,7 @@
 # BeatQ
 DemonHacks Project 
 
-# Contributos 
+# Contributors   
 Vijay
 Bradley
 Sanjeev
