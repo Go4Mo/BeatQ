@@ -2,3 +2,4 @@
 BeatQ/
 .vscode/
 __pycache__/
+*.pyc
