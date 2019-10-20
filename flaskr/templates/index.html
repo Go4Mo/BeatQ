@@ -44,7 +44,10 @@
 <div class="jumbotron">
   <div class="container text-center">
       <div style="color:darkgoldenrod">
-          <h1>{{page_name}}</h1>  
+          <h1>{{page_name}}</h1>
+          {% if page_name == "BeatQ - Dashboard" %}
+          <h3>Party Code: {{session_id}}</h3>
+          {% endif %}  
       </div>    
   </div>
 </div>

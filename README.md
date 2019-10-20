@@ -3,6 +3,9 @@ Welcome to BeatQ, a application that allows you and your friends to easily share
 
 By utilizing the spotify API, we allow users to collabaorate 
 
+**Contributors:** Mohamed Bah, Vijay Bharadwaj, Sanjeev Lingam, Bradley Bottomlee
+
+
 ## Running Locally 
 1. pip3 install virtualenv
 2. virtualenv BeatQ or virtualenv -p python3 BeatQ
@@ -12,4 +15,7 @@ By utilizing the spotify API, we allow users to collabaorate
 6. set FLASK_ENV=dev
 7. flask run
 
-**Contributors:** Mohamed Bah, Vijay Bharadwaj, Sanjeev Lingam, Bradley Bottomlee
+## Things to do
+1. Connect Joiner and Host
+2. Search bar functionality
+3. Make it look pretty
