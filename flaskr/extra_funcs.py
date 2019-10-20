@@ -16,3 +16,11 @@ def rand_code():
         code += str(random.choice(nums))
 
     return code
+
+def validate_code(code):
+    '''
+    This function validates a given activation code 
+    => returns bool if valid
+    '''
+    # TODO: Implemenet functionality to check
+    return False 

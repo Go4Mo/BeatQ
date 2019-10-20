@@ -1,9 +1,9 @@
 import os
 import requests
-from flask import Flask, render_template,redirect,request
+from flask import Flask, render_template, redirect, request
+from flaskr.User import User
 from flaskr.extra_funcs import *
 from flaskr.Session import *
-
 
 def create_app(test_config=None):
     # create and configure the app
@@ -33,6 +33,19 @@ def create_app(test_config=None):
     @app.route('/about')
     def about():
         return render_template('about.html')
+
+    @app.route('/join_data', methods=["POST"])
+    def join_data():
+        print("Hello world")
+        name = request.form['username']
+        activation_code = request.form['code']
+        
+        if validate_code(activation_code):
+            new_user = User(False, name, session)
+            return render_template('home.html')
+        else:
+            return render_template('join.html', invalid = True)
+
     
     @app.route('/spotifyAuth')
     def spotifyAuth():
