@@ -6,8 +6,8 @@ from flaskr.extra_funcs import *
 from flaskr.Assests import CookieException
 from collections import deque
 sessions = dict()
-_client_key = "32a33ef6be6f484aa7af70dbc0a8be74"
-_client_secret = "8c68f3903c78478ea18f9d18a79c7d13"
+_client_key = "CLIENT-KEY-HERE"
+_client_secret = "CLIENT-SECRET-HERE"
 
 def create_app(test_config=None):
     # create and configure the app
