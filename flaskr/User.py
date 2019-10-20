@@ -10,9 +10,15 @@ class User:
         self.is_host = is_host 
         self.name = name
         self.session = session # which session the user belongs to
+        self.songs = []
         self.identifier = rand_code() # identifies a given user's session 
 
+    def add_song(song):
+        self.songs.append(songs)
+    
     def __eq__(self, other):
         if not isinstance(other, User): 
             return False
         return self.identifier == other.identifier 
+
+    
