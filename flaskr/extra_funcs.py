@@ -16,3 +16,7 @@ def rand_code():
         code += str(random.choice(nums))
 
     return code
+
+def is_host(sessions, session, user_x):
+    current_session = sessions[session]
+    return user_x == current_session["host"]

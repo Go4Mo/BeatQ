@@ -1,0 +1,27 @@
+{% extends "index.html" %}
+{% block content %}
+<div class="col-sm-3">
+    {% if invalid == True %}
+    <div class="alert alert-danger" role="alert">
+        Invalid session code!
+    </div>
+    {% endif %}
+
+    <form action="{{ url_for('join_data') }}" method="POST">
+        <p>Username: </p><input type="text" name="username"><br>
+        <p>Session code (ask your hoster!): <input type="text" name="code"><br>
+        <input type="submit" value="Submit" class="btn btn-success btn-outline-success btn-lg">
+</div>
+<div class="jumbotron">
+<div class="container text-center">
+    <h1>BeatQ - Dashboard</h1>      
+</div>
+</div>
+
+<div class="container-fluid bg-3 text-center">
+
+</div><br><br>
+
+</body>
+</html>
+{% endblock content %}
