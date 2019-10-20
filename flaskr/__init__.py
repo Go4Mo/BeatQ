@@ -196,9 +196,11 @@ def create_app(test_config=None):
         queryUrl += '&limit=10'
         song_list = requests.get(queryUrl,headers=authorization_header)
         song_names = list()
+        song_uris = list()
         for i in song_list.json()["tracks"]["items"]:
             song_names.append(i["name"])
-        return render_template('dashboard.html', page_name="BeatQ - Dashboard", host = is_host(sessions, request.cookies.get('sessionID'), request.cookies.get('identifier')), seshes = sessions, session_id = request.cookies.get('sessionID'),song_names=song_names)
+            song_uris.append(i["uri"])
+        return render_template('dashboard.html', page_name="BeatQ - Dashboard", host = is_host(sessions, request.cookies.get('sessionID'), request.cookies.get('identifier')), seshes = sessions, session_id = request.cookies.get('sessionID'),song_names=song_names,song_uris=song_uris)
 
     @app.route('/dashboard',methods=["POST"])
     def dashboard():
@@ -221,4 +223,34 @@ def create_app(test_config=None):
             resp.set_cookie('identifier', '', expires=0)
             return resp
         return render_template('dashboard.html', page_name="BeatQ - Dashboard", host = host, seshes = sessions, session_id = request.cookies.get('sessionID'))
+    @app.route('/enqueue/',methods=["POST","GET"])
+    def enqueue():
+        global sessions
+        song_name = request.args.get("name")
+        song_uri = request.args.get("uri")
+        data={
+            'grant_type':'refresh_token',
+            'refresh_token':sessions[request.cookies.get('sessionID')]["refresh_token"],
+            'client_id':'32a33ef6be6f484aa7af70dbc0a8be74',
+            'client_secret':'8c68f3903c78478ea18f9d18a79c7d13'
+        }
+        res=requests.post('https://accounts.spotify.com/api/token',data=data)
+        sessions[request.cookies.get('sessionID')]["api_token"]=res.json()["access_token"]
+        print(res.json()["access_token"])
+        print(sessions[request.cookies.get('sessionID')]["playlist_id"])
+        authorization_header = {"Authorization":"Bearer {}".format(sessions[request.cookies.get('sessionID')]["api_token"]),
+                                "Content-Type":"application/json"}
+        queryUrl = '	https://api.spotify.com/v1/playlists/'
+        queryUrl += sessions[request.cookies.get('sessionID')]["playlist_id"]+"/tracks"
+        queryUrl += '?uris='+song_uri
+        addTracks = requests.post(queryUrl,headers=authorization_header)
+        try:
+            host = is_host(sessions, request.cookies.get('sessionID'), request.cookies.get('identifier'))
+        except Exception as CookieException:
+            resp = make_response(render_template('home.html', page_name = "BeatQ - Home"))
+            resp.set_cookie('sessionID', '', expires=0)
+            resp.set_cookie('identifier', '', expires=0)
+            return resp
+        return render_template('dashboard.html', page_name="BeatQ - Dashboard", host = host, seshes = sessions, session_id = request.cookies.get('sessionID'))
+
     return app

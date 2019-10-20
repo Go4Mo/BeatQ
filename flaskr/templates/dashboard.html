@@ -36,10 +36,11 @@
         <p>Search for song: </p><input type="text" name="song"><br>
         <input type="submit" value="Submit" class="btn btn-success btn-outline-success btn-lg">
 </form>
-
-{% for i in song_names %}
-<button class="dropdown-item" type="button">{{i}}</button><br>
+{% if song_names %}
+{% for i in range(0,10) %}
+<button onclick= "location.href='/enqueue?name={{song_names[i]}}&uri={{song_uris[i]}}'" class="dropdown-item btn btn-lg btn-warning" type="button">{{song_names[i]}}</button><br><br>
 {% endfor %}
+{% endif %}
 
 {% if host == True %}
 <!--Admin dashboard-->
