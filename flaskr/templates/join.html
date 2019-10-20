@@ -1,15 +1,19 @@
 {% extends "index.html" %}
 {% block content %}
 <div class="col-sm-3">
+    <div class="container center_div">
     {% if invalid == True %}
     <div class="alert alert-danger" role="alert">
         Invalid session code!
     </div>
     {% endif %}
-
+    <div class="container center_div">
     <form action="{{ url_for('join_data') }}" method="POST">
         <p>Username: </p><input type="text" name="username"><br>
-        <p>Session code (ask your hoster!): <input type="text" name="code"><br>
+        <p>Session code (ask your hoster!): </p><input type="text" name="code"><br><br>
         <input type="submit" value="Submit" class="btn btn-success btn-outline-success btn-lg">
+    </form>
+    </div>
+</div>
 </div>
 {% endblock content %}

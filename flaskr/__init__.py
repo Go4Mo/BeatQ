@@ -31,22 +31,22 @@ def create_app(test_config=None):
     @app.route('/')
     def index():
         if 'sessionID' in request.cookies:
-            return render_template('search.html')
+            return render_template('dashboard.html', page_name="BeatQ - Search", host = is_host(sessions, request.cookies.get('sessionID'), request.cookies.get('identifier')), seshes = sessions)
 
-        return render_template('home.html')
+        return render_template('home.html', page_name='BeatQ - Home')
     
     @app.route('/about')
     def about():
         if 'sessionID' in request.cookies:
-            return render_template('search.html')
-        return render_template('about.html')
+            return render_template('dashboard.html', page_name="BeatQ - Search", host = is_host(sessions, request.cookies.get('sessionID'), request.cookies.get('identifier')), seshes = sessions)
+        return render_template('about.html', page_name='BeatQ - About')
 
     @app.route('/join_data', methods=["POST"])
     def join_data():
         global sessions
 
         if 'sessionID' in request.cookies:
-            return render_template('search.html')
+            return render_template('dashboard.html', page_name="BeatQ - Search", host = is_host(sessions, request.cookies.get('sessionID'), request.cookies.get('identifier')), seshes = sessions)
 
         name = request.form['username']
         session_id = request.form['code']
@@ -54,21 +54,29 @@ def create_app(test_config=None):
         if session_id in sessions:
             new_user = User(False, name, session_id)
             sessions[session_id]["users"].append(new_user)
-            return render_template('search.html')
+            resp = make_response(render_template('dashboard.html', page_name="BeatQ - Search", host = False, seshes = sessions))
+            resp.set_cookie('sessionID', session_id)
+            resp.set_cookie('identifier', new_user.name)
+            return resp 
         else:
-            return render_template('join.html', invalid = True)
+            return render_template('join.html', invalid = True, page_name="BeatQ - Join")
 
     
     @app.route('/spotifyAuth')
     def spotifyAuth():
         if 'sessionID' in request.cookies:
-            return render_template('search.html')
+            return render_template('dashboard.html', page_name="BeatQ - Search", host = is_host(sessions, request.cookies.get('sessionID'), request.cookies.get('identifier')), seshes = sessions)
 
         oauthUrl = 'https://accounts.spotify.com/authorize'
         oauthUrl += '?response_type=code'
         oauthUrl += '&client_id=32a33ef6be6f484aa7af70dbc0a8be74'
+<<<<<<< HEAD
         oauthUrl += '&redirect_uri=http://localhost:5000/spotifyCallback'
         oauthUrl += '&scope=playlist-modify-public%20&playlist-modify-private%20&user-read-private%20&user-read-email%20'
+=======
+        oauthUrl += '&redirect_uri=http://127.0.0.1:5000/spotifyCallback'
+        oauthUrl += '&scope=user-read-private%20&user-read-email'
+>>>>>>> 6a1baf57a7ec39fa4073b0d7e7c3c20ebb506ec3
         return redirect(oauthUrl,code=302)
 
     @app.route('/spotifyCallback', methods=['GET','POST'])
@@ -76,13 +84,13 @@ def create_app(test_config=None):
         global sessions  
 
         if 'sessionID' in request.cookies:
-            return render_template('search.html')
+            return render_template('dashboard.html', page_name="BeatQ - Search", host = is_host(sessions, request.cookies.get('sessionID'), request.cookies.get('identifier')), seshes = sessions)
 
         code = request.args.get('code')
         tokenUrl = 'https://accounts.spotify.com/api/token'
         data = {'grant_type':'authorization_code',
                 'code':code,
-                'redirect_uri':'http://localhost:5000/spotifyCallback',
+                'redirect_uri':'http://127.0.0.1:5000/spotifyCallback',
                 'client_id':'32a33ef6be6f484aa7af70dbc0a8be74',
                 'client_secret':'8c68f3903c78478ea18f9d18a79c7d13'
         }
@@ -107,10 +115,11 @@ def create_app(test_config=None):
         print(playlist_response.json())
         
         new_user = User(True, userInformation.json()["display_name"], random_code)
+        sessions[random_code]["users"].append(new_user)
 
-        resp = make_response(render_template('search.html', random_code = random_code))
+        resp = make_response(render_template('dashboard.html', page_name="BeatQ - Search", host = True, seshes = sessions))
         resp.set_cookie('sessionID', random_code)
-        resp.set_cookie('identifier', new_user.identifier)
+        resp.set_cookie('identifier', new_user.name)
         return resp 
         
         
@@ -118,9 +127,10 @@ def create_app(test_config=None):
     @app.route('/join')
     def join():
         if 'sessionID' in request.cookies:
-            return render_template('search.html')
+            return render_template('dashboard.html', page_name="BeatQ - Search", host = is_host(sessions, request.cookies.get('sessionID'), request.cookies.get('identifier')), seshes = sessions)
 
-        return render_template('join.html')
+
+        return render_template('join.html', page_name='BeatQ - Join')
 
     @app.route('/search',methods=["POST"])
     def search():
@@ -141,5 +151,25 @@ def create_app(test_config=None):
         queryUrl += '&type=track'
         queryUrl += '&limit=10'
         song_list = requests.get(queryUrl,headers=authorization_header)
-        return render_template('search.html')
+        return render_template('dashboard.html', page_name="BeatQ - Search", host = is_host(sessions, request.cookies.get('sessionID'), request.cookies.get('identifier')), seshes = sessions)
+
+    @app.route('/dashboard',methods=["POST"])
+    def dashboard():
+        global sessions
+        data={
+            'grant_type':'refresh_token',
+            'refresh_token':sessions[request.cookies.get('sessionID')]["refresh_token"],
+            'client_id':'32a33ef6be6f484aa7af70dbc0a8be74',
+            'client_secret':'8c68f3903c78478ea18f9d18a79c7d13'
+        }
+        res=requests.post('https://accounts.spotify.com/api/token',data=data)
+        sessions[request.cookies.get('sessionID')]["api_token"]=res.json()["access_token"]
+        print(res.json()["access_token"])
+        authorization_header = {"Authorization":"Bearer {}".format(sessions[request.cookies.get('sessionID')]["api_token"])}
+        queryUrl = 'https://api.spotify.com/v1/search'
+        queryUrl += '?q='+request.form['song']
+        queryUrl += '&type=track'
+        queryUrl += '&limit=10'
+        song_list = requests.get(queryUrl,headers=authorization_header)
+        return render_template('dashboard.html', page_name="BeatQ - Search", host = is_host(sessions, request.cookies.get('sessionID'), request.cookies.get('identifier')), seshes = sessions)
     return app

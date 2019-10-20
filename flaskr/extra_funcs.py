@@ -16,3 +16,11 @@ def rand_code():
         code += str(random.choice(nums))
 
     return code
+
+def is_host(sessions, session, user_x):
+    try: 
+        current_session = sessions[session]
+    except KeyError: 
+        print("Please clear cookies!")
+        exit(1)
+    return user_x == current_session["host"]
