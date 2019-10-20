@@ -1,5 +1,6 @@
 import random
 import string
+from flaskr.Assests import CookieException
 
 def rand_code():
     '''
@@ -21,6 +22,5 @@ def is_host(sessions, session, user_x):
     try: 
         current_session = sessions[session]
     except KeyError: 
-        print("Please clear cookies!")
-        exit(1)
+        raise CookieException
     return user_x == current_session["host"]

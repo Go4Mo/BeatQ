@@ -3,8 +3,8 @@ import requests
 from flask import Flask, render_template, redirect, request, session, url_for, escape, make_response
 from flaskr.User import User
 from flaskr.extra_funcs import *
+from flaskr.Assests import CookieException
 from collections import deque
-
 sessions = dict()
 
 def create_app(test_config=None):
@@ -31,14 +31,30 @@ def create_app(test_config=None):
     @app.route('/')
     def index():
         if 'sessionID' in request.cookies:
-            return render_template('dashboard.html', page_name="BeatQ - Dashboard", host = is_host(sessions, request.cookies.get('sessionID'), request.cookies.get('identifier')), seshes = sessions, session_id = request.cookies.get('sessionID'))
+            try:
+                host = is_host(sessions, request.cookies.get('sessionID'))
+            except Exception as CookieException:
+                resp = make_response(render_template('home.html', page_name = "BeatQ - Home"))
+                resp.set_cookie('sessionID', '', expires=0)
+                resp.set_cookie('identifier', '', expires=0)
+                return resp
+
+            return render_template('dashboard.html', page_name="BeatQ - Dashboard", host = host, seshes = sessions, session_id = request.cookies.get('sessionID'))
 
         return render_template('home.html', page_name='BeatQ - Home')
     
     @app.route('/about')
     def about():
         if 'sessionID' in request.cookies:
-            return render_template('dashboard.html', page_name="BeatQ - Dashboard", host = is_host(sessions, request.cookies.get('sessionID'), request.cookies.get('identifier')), seshes = sessions, session_id = request.cookies.get('sessionID'))
+            try:
+                host = is_host(sessions, request.cookies.get('sessionID'))
+            except Exception as CookieException:
+                resp = make_response(render_template('home.html', page_name = "BeatQ - Home"))
+                resp.set_cookie('sessionID', '', expires=0)
+                resp.set_cookie('identifier', '', expires=0)
+                return resp
+
+            return render_template('dashboard.html', page_name="BeatQ - Dashboard", host = host, seshes = sessions, session_id = request.cookies.get('sessionID'))
         return render_template('about.html', page_name='BeatQ - About')
 
     @app.route('/join_data', methods=["POST"])
@@ -46,7 +62,15 @@ def create_app(test_config=None):
         global sessions
 
         if 'sessionID' in request.cookies:
-            return render_template('dashboard.html', page_name="BeatQ - Dashboard", host = is_host(sessions, request.cookies.get('sessionID'), request.cookies.get('identifier')), seshes = sessions, session_id = request.cookies.get('sessionID'))
+            try:
+                host = is_host(sessions, request.cookies.get('sessionID'))
+            except Exception as CookieException:
+                resp = make_response(render_template('home.html', page_name = "BeatQ - Home"))
+                resp.set_cookie('sessionID', '', expires=0)
+                resp.set_cookie('identifier', '', expires=0)
+                return resp
+
+            return render_template('dashboard.html', page_name="BeatQ - Dashboard", host = host, seshes = sessions, session_id = request.cookies.get('sessionID'))
 
         name = request.form['username']
         session_id = request.form['code']
@@ -65,7 +89,15 @@ def create_app(test_config=None):
     @app.route('/spotifyAuth')
     def spotifyAuth():
         if 'sessionID' in request.cookies:
-            return render_template('dashboard.html', page_name="BeatQ - Dashboard", host = is_host(sessions, request.cookies.get('sessionID'), request.cookies.get('identifier')), seshes = sessions, session_id = request.cookies.get('sessionID'))
+            try:
+                host = is_host(sessions, request.cookies.get('sessionID'))
+            except Exception as CookieException:
+                resp = make_response(render_template('home.html', page_name = "BeatQ - Home"))
+                resp.set_cookie('sessionID', '', expires=0)
+                resp.set_cookie('identifier', '', expires=0)
+                return resp
+
+            return render_template('dashboard.html', page_name="BeatQ - Dashboard", host = host, seshes = sessions, session_id = request.cookies.get('sessionID'))
 
         oauthUrl = 'https://accounts.spotify.com/authorize'
         oauthUrl += '?response_type=code'
@@ -79,7 +111,15 @@ def create_app(test_config=None):
         global sessions  
 
         if 'sessionID' in request.cookies:
-            return render_template('dashboard.html', page_name="BeatQ - Dashboard", host = is_host(sessions, request.cookies.get('sessionID'), request.cookies.get('identifier')), seshes = sessions, session_id = request.cookies.get('sessionID'))
+            try:
+                host = is_host(sessions, request.cookies.get('sessionID'))
+            except Exception as CookieException:
+                resp = make_response(render_template('home.html', page_name = "BeatQ - Home"))
+                resp.set_cookie('sessionID', '', expires=0)
+                resp.set_cookie('identifier', '', expires=0)
+                return resp
+
+            return render_template('dashboard.html', page_name="BeatQ - Dashboard", host = host, seshes = sessions, session_id = request.cookies.get('sessionID'))
 
         code = request.args.get('code')
         tokenUrl = 'https://accounts.spotify.com/api/token'
@@ -123,7 +163,15 @@ def create_app(test_config=None):
     @app.route('/join')
     def join():
         if 'sessionID' in request.cookies:
-            return render_template('dashboard.html', page_name="BeatQ - Dashboard", host = is_host(sessions, request.cookies.get('sessionID'), request.cookies.get('identifier')), seshes = sessions, session_id = request.cookies.get('sessionID'))
+            try:
+                host = is_host(sessions, request.cookies.get('sessionID'))
+            except Exception as CookieException:
+                resp = make_response(render_template('home.html', page_name = "BeatQ - Home"))
+                resp.set_cookie('sessionID', '', expires=0)
+                resp.set_cookie('identifier', '', expires=0)
+                return resp
+
+            return render_template('dashboard.html', page_name="BeatQ - Dashboard", host = host, seshes = sessions, session_id = request.cookies.get('sessionID'))
 
 
         return render_template('join.html', page_name='BeatQ - Join')
@@ -165,5 +213,12 @@ def create_app(test_config=None):
         sessions[request.cookies.get('sessionID')]["api_token"]=res.json()["access_token"]
         print(res.json()["access_token"])
         authorization_header = {"Authorization":"Bearer {}".format(sessions[request.cookies.get('sessionID')]["api_token"])}
-        return render_template('dashboard.html', page_name="BeatQ - Dashboard", host = is_host(sessions, request.cookies.get('sessionID'), request.cookies.get('identifier')), seshes = sessions, session_id = request.cookies.get('sessionID'))
+        try:
+            host = is_host(sessions, request.cookies.get('sessionID'))
+        except Exception as CookieException:
+            resp = make_response(render_template('home.html', page_name = "BeatQ - Home"))
+            resp.set_cookie('sessionID', '', expires=0)
+            resp.set_cookie('identifier', '', expires=0)
+            return resp
+        return render_template('dashboard.html', page_name="BeatQ - Dashboard", host = host, seshes = sessions, session_id = request.cookies.get('sessionID'))
     return app
