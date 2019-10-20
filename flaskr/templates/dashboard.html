@@ -32,12 +32,21 @@
   </tbody>
 </table>
 
-
 <form action="{{ url_for('search') }}" method="POST">
         <p>Search for song: </p><input type="text" name="song"><br>
         <input type="submit" value="Submit" class="btn btn-success btn-outline-success btn-lg">
 </form>
 
+<div class="btn-group">
+    <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      Results
+    </button>
+    <div class="dropdown-menu dropdown-menu-right">
+      {% for i in song_names %}
+      <button class="dropdown-item" type="button">{{i}}</button>
+      {% endfor %}
+    </div>
+  </div>
 
 {% if host == True %}
 <!--Admin dashboard-->

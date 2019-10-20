@@ -147,7 +147,10 @@ def create_app(test_config=None):
         queryUrl += '&type=track'
         queryUrl += '&limit=10'
         song_list = requests.get(queryUrl,headers=authorization_header)
-        return render_template('dashboard.html', page_name="BeatQ - Dashboard", host = is_host(sessions, request.cookies.get('sessionID'), request.cookies.get('identifier')), seshes = sessions, session_id = request.cookies.get('sessionID'))
+        song_names = list()
+        for i in song_list.json()["tracks"].keys():
+            song_names.append(i)
+        return render_template('dashboard.html', page_name="BeatQ - Dashboard", host = is_host(sessions, request.cookies.get('sessionID'), request.cookies.get('identifier')), seshes = sessions, session_id = request.cookies.get('sessionID'),song_names=song_names)
 
     @app.route('/dashboard',methods=["POST"])
     def dashboard():
@@ -162,10 +165,5 @@ def create_app(test_config=None):
         sessions[request.cookies.get('sessionID')]["api_token"]=res.json()["access_token"]
         print(res.json()["access_token"])
         authorization_header = {"Authorization":"Bearer {}".format(sessions[request.cookies.get('sessionID')]["api_token"])}
-        queryUrl = 'https://api.spotify.com/v1/search'
-        queryUrl += '?q='+request.form['song']
-        queryUrl += '&type=track'
-        queryUrl += '&limit=10'
-        song_list = requests.get(queryUrl,headers=authorization_header)
         return render_template('dashboard.html', page_name="BeatQ - Dashboard", host = is_host(sessions, request.cookies.get('sessionID'), request.cookies.get('identifier')), seshes = sessions, session_id = request.cookies.get('sessionID'))
     return app
