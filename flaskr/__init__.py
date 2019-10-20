@@ -2,6 +2,7 @@ import os
 import requests
 from flask import Flask, render_template,redirect,request
 from flaskr.extra_funcs import *
+from flaskr.Session import *
 
 
 def create_app(test_config=None):
@@ -39,6 +40,7 @@ def create_app(test_config=None):
         oauthUrl += '?response_type=code'
         oauthUrl += '&client_id=32a33ef6be6f484aa7af70dbc0a8be74'
         oauthUrl += '&redirect_uri=http://localhost:5000/spotifyCallback'
+        oauthUrl += '&scope=user-read-private%20&user-read-email'
         return redirect(oauthUrl,code=302)
 
     @app.route('/spotifyCallback', methods=['GET','POST'])
@@ -53,7 +55,9 @@ def create_app(test_config=None):
         }
         random_code = rand_code()
         res = requests.post(tokenUrl,data=data)
-        print(res.json())
+        authorization_header = {"Authorization":"Bearer {}".format(res.json()['access_token'])}
+        userInformation = requests.get('https://api.spotify.com/v1/me',headers=authorization_header)
+        print(userInformation.json())
         return render_template('host.html', random_code = random_code)
     
     @app.route('/join')
