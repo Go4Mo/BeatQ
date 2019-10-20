@@ -15,10 +15,10 @@ Welcome to BeatQ, an application that allows you and your friends to easily shar
 7. flask run
 
 ## Inspiration
-At social gatherings that have music playing, their will almost always be a flood of requests made to whoever is playing the music. If that person decides to leave early, someone else would have to take the time to queue up their music. 
+We’ve all been in that situation at a party where that one person with the AUX has the worst music taste. It can be tough to tell them that their music sucks without creating an awkward situation. What if we gave more power to the people? That’s exactly how we came up with BeatQ, a web application that allows users to queue up songs to the DJ by making a simple request on their phones.
 
 ## What it does
-BeatQ is a web app that allows users to collaborate simultaniously on developing a music queue and allows the host to manage the series of requests from the diffrent clients. BeatQ also allows the host to control what, when, and how often people can contribute to the queue.
+BeatQ is the first ever web application that elevates a party to the next level by allowing users to collaborate simultaneously on developing a music queue and making sure everyone gets to jam out to their favorite song. A host must first create a BeatQ session, which is automatically connected to a Spotify playlist. The host has the ability to search for songs and add them to the playlist. On the dashboard is also an invited code. The host can send this code to others, who can use the join functionality to queue songs on their dashboard. The host has special permissions to end a session that he has created, or dequeue certain songs that were added. 
 
 ## How we built it
 By utilizing the spotify API we created a host-client format in which the client connects to the host after entering a unique-id code generated from the host server. After the client joins the server, they are assigned a default level of premissions which both restricts and allows them to contribute to the queue. Ultimatly, the control of both the queue and the clients premissions lie with the host who can choose to opt out and pass the role of the host to a client. From their, users would have a dashboard view of members inside the queue, their premissions, and songs currently queued up. They can also search and ammend songs onto the queue if their premission allows it. 
