@@ -1,5 +1,6 @@
 {% extends "index.html" %}
 {% block content %}
-<input id="searchbar" type="text"
-        name="search" placeholder="Search..."> 
+<form action="{{ url_for('search') }}" method="POST">
+        <p>Search for song: </p><input type="text" name="song"><br>
+        <input type="submit" value="Submit" class="btn btn-success btn-outline-success btn-lg">
 {% endblock content %}
