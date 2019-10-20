@@ -6,6 +6,8 @@ from flaskr.extra_funcs import *
 from flaskr.Assests import CookieException
 from collections import deque
 sessions = dict()
+_client_key = "32a33ef6be6f484aa7af70dbc0a8be74"
+_client_secret = "8c68f3903c78478ea18f9d18a79c7d13"
 
 def create_app(test_config=None):
     # create and configure the app
@@ -103,7 +105,7 @@ def create_app(test_config=None):
 
         oauthUrl = 'https://accounts.spotify.com/authorize'
         oauthUrl += '?response_type=code'
-        oauthUrl += '&client_id=32a33ef6be6f484aa7af70dbc0a8be74'
+        oauthUrl += '&client_id=' + _client_key # client key 
         oauthUrl += '&redirect_uri=http://127.0.0.1:5000/spotifyCallback'
         oauthUrl += '&scope=playlist-modify-public%20&playlist-modify-private%20&user-read-private%20&user-read-email'
         return redirect(oauthUrl,code=302)
@@ -129,8 +131,8 @@ def create_app(test_config=None):
         data = {'grant_type':'authorization_code',
                 'code':code,
                 'redirect_uri':'http://127.0.0.1:5000/spotifyCallback',
-                'client_id':'32a33ef6be6f484aa7af70dbc0a8be74',
-                'client_secret':'8c68f3903c78478ea18f9d18a79c7d13'
+                'client_id':_client_key, # client key
+                'client_secret':_client_secret # client secret
         }
         res = requests.post(tokenUrl,data=data)
         authorization_header = {'Authorization':'Bearer {}'.format(res.json()["access_token"]),
@@ -187,8 +189,8 @@ def create_app(test_config=None):
         data={
             'grant_type':'refresh_token',
             'refresh_token':sessions[request.cookies.get('sessionID')]["refresh_token"],
-            'client_id':'32a33ef6be6f484aa7af70dbc0a8be74',
-            'client_secret':'8c68f3903c78478ea18f9d18a79c7d13'
+            'client_id':_client_key, # client key
+            'client_secret':_client_secret # client secret
         }
         res=requests.post('https://accounts.spotify.com/api/token',data=data)
         sessions[request.cookies.get('sessionID')]["api_token"]=res.json()["access_token"]
@@ -214,8 +216,8 @@ def create_app(test_config=None):
         data={
             'grant_type':'refresh_token',
             'refresh_token':sessions[request.cookies.get('sessionID')]["refresh_token"],
-            'client_id':'32a33ef6be6f484aa7af70dbc0a8be74',
-            'client_secret':'8c68f3903c78478ea18f9d18a79c7d13'
+            'client_id':_client_key,
+            'client_secret':_client_secret
         }
         res=requests.post('https://accounts.spotify.com/api/token',data=data)
         sessions[request.cookies.get('sessionID')]["api_token"]=res.json()["access_token"]
@@ -239,8 +241,8 @@ def create_app(test_config=None):
         data={
             'grant_type':'refresh_token',
             'refresh_token':sessions[request.cookies.get('sessionID')]["refresh_token"],
-            'client_id':'32a33ef6be6f484aa7af70dbc0a8be74',
-            'client_secret':'8c68f3903c78478ea18f9d18a79c7d13'
+            'client_id':_client_key, # client key 
+            'client_secret':_client_secret # client secret
         }
         res=requests.post('https://accounts.spotify.com/api/token',data=data)
         sessions[request.cookies.get('sessionID')]["api_token"]=res.json()["access_token"]
