@@ -1,5 +1,5 @@
 .DS_Store
 BeatQ/
 .vscode/
-__pycache__/
+flaskr/__pycache__/
 *.pyc
