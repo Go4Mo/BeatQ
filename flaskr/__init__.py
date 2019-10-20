@@ -32,7 +32,7 @@ def create_app(test_config=None):
     def index():
         if 'sessionID' in request.cookies:
             try:
-                host = is_host(sessions, request.cookies.get('sessionID'))
+                host = is_host(sessions, request.cookies.get('sessionID'), request.cookies.get('identifier'))
             except Exception as CookieException:
                 resp = make_response(render_template('home.html', page_name = "BeatQ - Home"))
                 resp.set_cookie('sessionID', '', expires=0)
@@ -47,7 +47,7 @@ def create_app(test_config=None):
     def about():
         if 'sessionID' in request.cookies:
             try:
-                host = is_host(sessions, request.cookies.get('sessionID'))
+                host = is_host(sessions, request.cookies.get('sessionID'), request.cookies.get('identifier'))
             except Exception as CookieException:
                 resp = make_response(render_template('home.html', page_name = "BeatQ - Home"))
                 resp.set_cookie('sessionID', '', expires=0)
@@ -63,7 +63,7 @@ def create_app(test_config=None):
 
         if 'sessionID' in request.cookies:
             try:
-                host = is_host(sessions, request.cookies.get('sessionID'))
+                host = is_host(sessions, request.cookies.get('sessionID'), request.cookies.get('identifier'))
             except Exception as CookieException:
                 resp = make_response(render_template('home.html', page_name = "BeatQ - Home"))
                 resp.set_cookie('sessionID', '', expires=0)
@@ -90,7 +90,7 @@ def create_app(test_config=None):
     def spotifyAuth():
         if 'sessionID' in request.cookies:
             try:
-                host = is_host(sessions, request.cookies.get('sessionID'))
+                host = is_host(sessions, request.cookies.get('sessionID'), request.cookies.get('identifier'))
             except Exception as CookieException:
                 resp = make_response(render_template('home.html', page_name = "BeatQ - Home"))
                 resp.set_cookie('sessionID', '', expires=0)
@@ -112,7 +112,7 @@ def create_app(test_config=None):
 
         if 'sessionID' in request.cookies:
             try:
-                host = is_host(sessions, request.cookies.get('sessionID'))
+                host = is_host(sessions, request.cookies.get('sessionID'), request.cookies.get('identifier'))
             except Exception as CookieException:
                 resp = make_response(render_template('home.html', page_name = "BeatQ - Home"))
                 resp.set_cookie('sessionID', '', expires=0)
@@ -164,7 +164,7 @@ def create_app(test_config=None):
     def join():
         if 'sessionID' in request.cookies:
             try:
-                host = is_host(sessions, request.cookies.get('sessionID'))
+                host = is_host(sessions, request.cookies.get('sessionID'), request.cookies.get('identifier'))
             except Exception as CookieException:
                 resp = make_response(render_template('home.html', page_name = "BeatQ - Home"))
                 resp.set_cookie('sessionID', '', expires=0)
@@ -214,7 +214,7 @@ def create_app(test_config=None):
         print(res.json()["access_token"])
         authorization_header = {"Authorization":"Bearer {}".format(sessions[request.cookies.get('sessionID')]["api_token"])}
         try:
-            host = is_host(sessions, request.cookies.get('sessionID'))
+            host = is_host(sessions, request.cookies.get('sessionID'), request.cookies.get('identifier'))
         except Exception as CookieException:
             resp = make_response(render_template('home.html', page_name = "BeatQ - Home"))
             resp.set_cookie('sessionID', '', expires=0)
