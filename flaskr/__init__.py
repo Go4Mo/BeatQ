@@ -54,7 +54,7 @@ def create_app(test_config=None):
         if session_id in sessions:
             new_user = User(False, name, session_id)
             sessions[session_id]["users"].append(new_user)
-            resp = make_response(render_template('dashboard.html', page_name="BeatQ - Dashboard", host = False, seshes = sessions, session_id = random_code))
+            resp = make_response(render_template('dashboard.html', page_name="BeatQ - Dashboard", host = False, seshes = sessions, session_id = session_id))
             resp.set_cookie('sessionID', session_id)
             resp.set_cookie('identifier', new_user.name)
             return resp 
