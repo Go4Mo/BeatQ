@@ -5,7 +5,7 @@ By utilizing the spotify API, we allow users to collabaorate
 
 ## Running Locally 
 1. pip3 install virtualenv
-2. virtualenv BeatQ
+2. virtualenv BeatQ or virtualenv -p python3 BeatQ
 3. source BeatQ/Scripts/activate  or source BeatQ/bin/activate
 4. pip3 install -r requirements.txt
 5. set FLASK_APP=flaskr

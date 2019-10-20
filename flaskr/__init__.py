@@ -1,6 +1,6 @@
 import os
 import requests
-from flask import Flask, render_template, redirect, request, session, url_for, escape
+from flask import Flask, render_template, redirect, request, session, url_for, escape, make_response
 from flaskr.User import User
 from flaskr.extra_funcs import *
 from collections import deque
@@ -12,7 +12,6 @@ def create_app(test_config=None):
         SECRET_KEY='dev',
         DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
     )
-    app.SECRET_KEY = rand_code()
 
     if test_config is None:
         # load the instance config, if it exists, when not testing
@@ -59,6 +58,8 @@ def create_app(test_config=None):
 
     @app.route('/spotifyCallback', methods=['GET','POST'])
     def spotifyAuthCallback():
+        
+
         code = request.args.get('code')
         tokenUrl = 'https://accounts.spotify.com/api/token'
         data = {'grant_type':'authorization_code',
@@ -67,16 +68,21 @@ def create_app(test_config=None):
                 'client_id':'32a33ef6be6f484aa7af70dbc0a8be74',
                 'client_secret':'8c68f3903c78478ea18f9d18a79c7d13'
         }
-        random_code = rand_code()
-        Session[random_code] = dict()
-        Session[random_code]["host"] = "temp"
-        Session[random_code]["users"] = dict()
-        Session[random_code]["songs"] = deque()
         res = requests.post(tokenUrl,data=data)
         authorization_header = {"Authorization":"Bearer {}".format(res.json()['access_token'])}
         userInformation = requests.get('https://api.spotify.com/v1/me',headers=authorization_header)
+        
+        
+        random_code = rand_code()
+        session[random_code] = dict()
+        session[random_code]["host"] = userInformation.json()["display_name"]
+        
         print(userInformation.json())
-        return render_template('host.html', random_code = random_code)
+        resp = make_response(render_template('host.html', random_code = random_code))
+        resp.set_cookie('sessionID', random_code)
+        return resp 
+        
+        
     
     @app.route('/join')
     def join():
