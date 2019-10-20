@@ -45,7 +45,7 @@ def create_app(test_config=None):
 
         if activation_code in sessions:
             new_user = User(False, name, session)
-            return render_template('home.html')
+            return render_template('search.html')
         else:
             return render_template('join.html', invalid = True)
 
