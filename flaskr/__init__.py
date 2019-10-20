@@ -70,13 +70,8 @@ def create_app(test_config=None):
         oauthUrl = 'https://accounts.spotify.com/authorize'
         oauthUrl += '?response_type=code'
         oauthUrl += '&client_id=32a33ef6be6f484aa7af70dbc0a8be74'
-<<<<<<< HEAD
-        oauthUrl += '&redirect_uri=http://localhost:5000/spotifyCallback'
-        oauthUrl += '&scope=playlist-modify-public%20&playlist-modify-private%20&user-read-private%20&user-read-email%20'
-=======
         oauthUrl += '&redirect_uri=http://127.0.0.1:5000/spotifyCallback'
-        oauthUrl += '&scope=user-read-private%20&user-read-email'
->>>>>>> 6a1baf57a7ec39fa4073b0d7e7c3c20ebb506ec3
+        oauthUrl += '&scope=playlist-modify-public%20&playlist-modify-private%20&user-read-private%20&user-read-email'
         return redirect(oauthUrl,code=302)
 
     @app.route('/spotifyCallback', methods=['GET','POST'])
@@ -110,7 +105,7 @@ def create_app(test_config=None):
         sessions[random_code]["api_token"]=res.json()['access_token']
         sessions[random_code]["refresh_token"]=res.json()['refresh_token']
 
-        create_playlist = "{\"name\":\"BeatQ\"}"
+        create_playlist = "{\"name\":\"BeatQ "+random_code+"\"}"
         playlist_response = requests.post('https://api.spotify.com/v1/users/'+userInformation.json()["id"]+'/playlists',data=create_playlist,headers=authorization_header)
         print(playlist_response.json())
         
