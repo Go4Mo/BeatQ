@@ -44,6 +44,9 @@
 <div class="jumbotron">
   <div class="container text-center">
     <h1>{{page_name}}</h1>      
+    {% if page_name == "BeatQ - Dashboard" %}
+    <h3>Party Code: {{session_id}} </h3>
+    {% endif %}
   </div>
 </div>
   
