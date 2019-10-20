@@ -1,17 +1,35 @@
 {% extends "index.html" %}
 {% block content %}
 
+<div class="container text-center">
 <table class="table">
   <thead>
     <tr>
-      <th scope="col">#</th>
-      <th scope="col">First</th>
-      <th scope="col">Last</th>
-      <th scope="col">Handle</th>
+      <th scope="col">Host Status</th>  
+      <th scope="col">Identifier</th>
+      <th scope="col">Name</th>
+      <th scope="col">Next Song</th>
     </tr>
   </thead>
   <tbody>
+    {% for user in seshes[session_id]["users"] %}
     <tr>
+            {% if user.is_host %}
+            <th scope="row">Host</th>
+            {% else %}
+            <th scope="row">Not Host</th>
+            {% endif %}
+
+            <td>{{user.identifier}}</td>
+            <td>{{user.name}}</td>
+            {% if user.num_songs() == 0 %}
+            <td>None</td>
+            {% else %}
+            <td>{{user.songs[0]}}</td>
+            {% endif %}
+    </tr>
+    {% endfor %}
+    <!--<tr>
       <th scope="row">1</th>
       <td>Mark</td>
       <td>Otto</td>
@@ -29,8 +47,10 @@
       <td>the Bird</td>
       <td>@twitter</td>
     </tr>
+-->
   </tbody>
 </table>
+</div>
 
 <form action="{{ url_for('search') }}" method="POST">
         <p>Search for song: </p><input type="text" name="song"><br>
