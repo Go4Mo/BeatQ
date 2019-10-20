@@ -38,8 +38,8 @@ def create_app(test_config=None):
                 resp.set_cookie('sessionID', '', expires=0)
                 resp.set_cookie('identifier', '', expires=0)
                 return resp
-
-            return render_template('dashboard.html', page_name="BeatQ - Dashboard", host = host, seshes = sessions, session_id = request.cookies.get('sessionID'))
+            num_users=len(sessions[request.cookies.get('sessionID')]["users"])
+            return render_template('dashboard.html', page_name="BeatQ - Dashboard", host = host, seshes = sessions, session_id = request.cookies.get('sessionID'), num_users = num_users)
 
         return render_template('home.html', page_name='BeatQ - Home')
     
@@ -53,8 +53,8 @@ def create_app(test_config=None):
                 resp.set_cookie('sessionID', '', expires=0)
                 resp.set_cookie('identifier', '', expires=0)
                 return resp
-
-            return render_template('dashboard.html', page_name="BeatQ - Dashboard", host = host, seshes = sessions, session_id = request.cookies.get('sessionID'))
+            num_users=len(sessions[request.cookies.get('sessionID')]["users"])
+            return render_template('dashboard.html', page_name="BeatQ - Dashboard", host = host, seshes = sessions, session_id = request.cookies.get('sessionID'), num_users = num_users)
         return render_template('about.html', page_name='BeatQ - About')
 
     @app.route('/join_data', methods=["POST"])
@@ -69,8 +69,8 @@ def create_app(test_config=None):
                 resp.set_cookie('sessionID', '', expires=0)
                 resp.set_cookie('identifier', '', expires=0)
                 return resp
-
-            return render_template('dashboard.html', page_name="BeatQ - Dashboard", host = host, seshes = sessions, session_id = request.cookies.get('sessionID'))
+            num_users=len(sessions[request.cookies.get('sessionID')]["users"])
+            return render_template('dashboard.html', page_name="BeatQ - Dashboard", host = host, seshes = sessions, session_id = request.cookies.get('sessionID'), num_users = num_users)
 
         name = request.form['username']
         session_id = request.form['code']
@@ -78,7 +78,8 @@ def create_app(test_config=None):
         if session_id in sessions:
             new_user = User(False, name, session_id)
             sessions[session_id]["users"].append(new_user)
-            resp = make_response(render_template('dashboard.html', page_name="BeatQ - Dashboard", host = False, seshes = sessions, session_id = session_id))
+            num_users=len(sessions[session_id]["users"])
+            resp = make_response(render_template('dashboard.html', page_name="BeatQ - Dashboard", host = False, seshes = sessions, session_id = session_id, num_users = num_users))
             resp.set_cookie('sessionID', session_id)
             resp.set_cookie('identifier', new_user.name)
             return resp 
@@ -97,7 +98,8 @@ def create_app(test_config=None):
                 resp.set_cookie('identifier', '', expires=0)
                 return resp
 
-            return render_template('dashboard.html', page_name="BeatQ - Dashboard", host = host, seshes = sessions, session_id = request.cookies.get('sessionID'))
+            num_users=len(sessions[request.cookies.get('sessionID')]["users"])
+            return render_template('dashboard.html', page_name="BeatQ - Dashboard", host = host, seshes = sessions, session_id = request.cookies.get('sessionID'), num_users = num_users)
 
         oauthUrl = 'https://accounts.spotify.com/authorize'
         oauthUrl += '?response_type=code'
@@ -119,7 +121,8 @@ def create_app(test_config=None):
                 resp.set_cookie('identifier', '', expires=0)
                 return resp
 
-            return render_template('dashboard.html', page_name="BeatQ - Dashboard", host = host, seshes = sessions, session_id = request.cookies.get('sessionID'))
+            num_users=len(sessions[request.cookies.get('sessionID')]["users"])
+            return render_template('dashboard.html', page_name="BeatQ - Dashboard", host = host, seshes = sessions, session_id = request.cookies.get('sessionID'), num_users = num_users)
 
         code = request.args.get('code')
         tokenUrl = 'https://accounts.spotify.com/api/token'
@@ -153,7 +156,8 @@ def create_app(test_config=None):
         new_user = User(True, userInformation.json()["display_name"], random_code)
         sessions[random_code]["users"].append(new_user)
 
-        resp = make_response(render_template('dashboard.html', page_name="BeatQ - Dashboard", host = True, seshes = sessions, session_id = random_code))
+        num_users=len(sessions[random_code]["users"])
+        resp = make_response(render_template('dashboard.html', page_name="BeatQ - Dashboard", host = True, seshes = sessions, session_id = random_code, num_users=len(sessions[random_code]["users"])))
         resp.set_cookie('sessionID', random_code)
         resp.set_cookie('identifier', new_user.name)
         return resp 
@@ -171,7 +175,8 @@ def create_app(test_config=None):
                 resp.set_cookie('identifier', '', expires=0)
                 return resp
 
-            return render_template('dashboard.html', page_name="BeatQ - Dashboard", host = host, seshes = sessions, session_id = request.cookies.get('sessionID'))
+            num_users=len(sessions[request.cookies.get('sessionID')]["users"])
+            return render_template('dashboard.html', page_name="BeatQ - Dashboard", host = host, seshes = sessions, session_id = request.cookies.get('sessionID'), num_users = num_users)
 
 
         return render_template('join.html', page_name='BeatQ - Join')
@@ -200,7 +205,8 @@ def create_app(test_config=None):
         for i in song_list.json()["tracks"]["items"]:
             song_names.append(i["name"])
             song_uris.append(i["uri"])
-        return render_template('dashboard.html', page_name="BeatQ - Dashboard", host = is_host(sessions, request.cookies.get('sessionID'), request.cookies.get('identifier')), seshes = sessions, session_id = request.cookies.get('sessionID'),song_names=song_names,song_uris=song_uris)
+        num_users=len(sessions[request.cookies.get('sessionID')]["users"])
+        return render_template('dashboard.html', page_name="BeatQ - Dashboard", host = is_host(sessions, request.cookies.get('sessionID'), request.cookies.get('identifier')), seshes = sessions, session_id = request.cookies.get('sessionID'),song_names=song_names,song_uris=song_uris,num_users = num_users)
 
     @app.route('/dashboard',methods=["POST"])
     def dashboard():
@@ -222,7 +228,9 @@ def create_app(test_config=None):
             resp.set_cookie('sessionID', '', expires=0)
             resp.set_cookie('identifier', '', expires=0)
             return resp
-        return render_template('dashboard.html', page_name="BeatQ - Dashboard", host = host, seshes = sessions, session_id = request.cookies.get('sessionID'))
+            
+        num_users=len(sessions[request.cookies.get('sessionID')]["users"])
+        return render_template('dashboard.html', page_name="BeatQ - Dashboard", host = host, seshes = sessions, session_id = request.cookies.get('sessionID'), num_users = num_users)
     @app.route('/enqueue/',methods=["POST","GET"])
     def enqueue():
         global sessions
@@ -252,5 +260,4 @@ def create_app(test_config=None):
             resp.set_cookie('identifier', '', expires=0)
             return resp
         return render_template('dashboard.html', page_name="BeatQ - Dashboard", host = host, seshes = sessions, session_id = request.cookies.get('sessionID'))
-
     return app
