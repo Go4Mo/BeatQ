@@ -14,7 +14,7 @@ class User:
         self.identifier = rand_code() # identifies a given user's session 
 
     def add_song(self, song):
-        self.songs.append(songs)
+        self.songs.append(song)
     
     def num_songs(self):
         return len(self.songs)

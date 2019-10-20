@@ -77,7 +77,7 @@ def create_app(test_config=None):
 
         if session_id in sessions:
             new_user = User(False, name, session_id)
-            sessions[session_id]["users"].append(new_user)
+            sessions[session_id]["users"][new_user.name] = new_user
             num_users=len(sessions[session_id]["users"])
             resp = make_response(render_template('dashboard.html', page_name="BeatQ - Dashboard", host = False, seshes = sessions, session_id = session_id, num_users = num_users))
             resp.set_cookie('sessionID', session_id)
@@ -143,7 +143,7 @@ def create_app(test_config=None):
         # instantiate a new session
         sessions[random_code] = dict()
         sessions[random_code]["host"] = userInformation.json()["display_name"]
-        sessions[random_code]["users"] = []
+        sessions[random_code]["users"] = dict()
         sessions[random_code]["songs"] = deque()
         sessions[random_code]["api_token"]=res.json()['access_token']
         sessions[random_code]["refresh_token"]=res.json()['refresh_token']
@@ -154,7 +154,7 @@ def create_app(test_config=None):
         sessions[random_code]["playlist_id"]=playlist_response.json()["id"]
         
         new_user = User(True, userInformation.json()["display_name"], random_code)
-        sessions[random_code]["users"].append(new_user)
+        sessions[random_code]["users"][new_user.name] = new_user
 
         num_users=len(sessions[random_code]["users"])
         resp = make_response(render_template('dashboard.html', page_name="BeatQ - Dashboard", host = True, seshes = sessions, session_id = random_code, num_users=len(sessions[random_code]["users"])))
@@ -251,6 +251,7 @@ def create_app(test_config=None):
         queryUrl = '	https://api.spotify.com/v1/playlists/'
         queryUrl += sessions[request.cookies.get('sessionID')]["playlist_id"]+"/tracks"
         queryUrl += '?uris='+song_uri
+        print(queryUrl)
         addTracks = requests.post(queryUrl,headers=authorization_header)
         try:
             host = is_host(sessions, request.cookies.get('sessionID'), request.cookies.get('identifier'))
@@ -259,5 +260,8 @@ def create_app(test_config=None):
             resp.set_cookie('sessionID', '', expires=0)
             resp.set_cookie('identifier', '', expires=0)
             return resp
+        
+        sessions[request.cookies.get('sessionID')]["users"][request.cookies.get('identifier')].add_song(song_name)
+
         return render_template('dashboard.html', page_name="BeatQ - Dashboard", host = host, seshes = sessions, session_id = request.cookies.get('sessionID'))
     return app
