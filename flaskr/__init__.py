@@ -77,9 +77,12 @@ def create_app(test_config=None):
         session[random_code] = dict()
         session[random_code]["host"] = userInformation.json()["display_name"]
         
-        
         print(userInformation.json())
-        return render_template('host.html', random_code = random_code)
+        resp = make_response(render_template('host.html', random_code = random_code))
+        resp.set_cookie('sessionID', random_code)
+        return resp 
+        
+        
     
     @app.route('/join')
     def join():
