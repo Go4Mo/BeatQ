@@ -148,8 +148,8 @@ def create_app(test_config=None):
         queryUrl += '&limit=10'
         song_list = requests.get(queryUrl,headers=authorization_header)
         song_names = list()
-        for i in song_list.json()["tracks"].keys():
-            song_names.append(i)
+        for i in song_list.json()["tracks"]["items"]:
+            song_names.append(i["name"])
         return render_template('dashboard.html', page_name="BeatQ - Dashboard", host = is_host(sessions, request.cookies.get('sessionID'), request.cookies.get('identifier')), seshes = sessions, session_id = request.cookies.get('sessionID'),song_names=song_names)
 
     @app.route('/dashboard',methods=["POST"])
