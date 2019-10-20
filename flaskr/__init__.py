@@ -30,21 +30,30 @@ def create_app(test_config=None):
  
     @app.route('/')
     def index():
+        if 'sessionID' in request.cookies:
+            return render_template('search.html')
+
         return render_template('home.html')
     
     @app.route('/about')
     def about():
+        if 'sessionID' in request.cookies:
+            return render_template('search.html')
         return render_template('about.html')
 
     @app.route('/join_data', methods=["POST"])
     def join_data():
         global sessions
 
-        name = request.form['username']
-        activation_code = request.form['code']
+        if 'sessionID' in request.cookies:
+            return render_template('search.html')
 
-        if activation_code in sessions:
-            new_user = User(False, name, session)
+        name = request.form['username']
+        session_id = request.form['code']
+
+        if session_id in sessions:
+            new_user = User(False, name, session_id)
+            sessions[session_id]["users"].append(new_user)
             return render_template('search.html')
         else:
             return render_template('join.html', invalid = True)
@@ -52,6 +61,9 @@ def create_app(test_config=None):
     
     @app.route('/spotifyAuth')
     def spotifyAuth():
+        if 'sessionID' in request.cookies:
+            return render_template('search.html')
+
         oauthUrl = 'https://accounts.spotify.com/authorize'
         oauthUrl += '?response_type=code'
         oauthUrl += '&client_id=32a33ef6be6f484aa7af70dbc0a8be74'
@@ -62,6 +74,9 @@ def create_app(test_config=None):
     @app.route('/spotifyCallback', methods=['GET','POST'])
     def spotifyAuthCallback():      
         global sessions  
+
+        if 'sessionID' in request.cookies:
+            return render_template('search.html')
 
         code = request.args.get('code')
         tokenUrl = 'https://accounts.spotify.com/api/token'
@@ -77,18 +92,29 @@ def create_app(test_config=None):
         
         
         random_code = rand_code()
+
+        # instantiate a new session
         sessions[random_code] = dict()
         sessions[random_code]["host"] = userInformation.json()["display_name"]
+        sessions[random_code]["users"] = []
+        sessions[random_code]["songs"] = deque()
         
         print(userInformation.json())
-        resp = make_response(render_template('host.html', random_code = random_code))
+        
+        new_user = User(True, userInformation.json()["display_name"], random_code)
+
+        resp = make_response(render_template('search.html', random_code = random_code))
         resp.set_cookie('sessionID', random_code)
+        resp.set_cookie('identifier', new_user.identifier)
         return resp 
         
         
     
     @app.route('/join')
     def join():
+        if 'sessionID' in request.cookies:
+            return render_template('search.html')
+
         return render_template('join.html')
 
     @app.route('/search',methods=["POST"])
