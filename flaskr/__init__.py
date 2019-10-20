@@ -68,7 +68,7 @@ def create_app(test_config=None):
         oauthUrl += '?response_type=code'
         oauthUrl += '&client_id=32a33ef6be6f484aa7af70dbc0a8be74'
         oauthUrl += '&redirect_uri=http://localhost:5000/spotifyCallback'
-        oauthUrl += '&scope=user-read-private%20&user-read-email'
+        oauthUrl += '&scope=playlist-modify-public%20&playlist-modify-private%20&user-read-private%20&user-read-email%20'
         return redirect(oauthUrl,code=302)
 
     @app.route('/spotifyCallback', methods=['GET','POST'])
@@ -87,7 +87,8 @@ def create_app(test_config=None):
                 'client_secret':'8c68f3903c78478ea18f9d18a79c7d13'
         }
         res = requests.post(tokenUrl,data=data)
-        authorization_header = {"Authorization":"Bearer {}".format(res.json()['access_token'])}
+        authorization_header = {'Authorization':'Bearer {}'.format(res.json()["access_token"]),
+                                "Content-Type":"application/json"}
         userInformation = requests.get('https://api.spotify.com/v1/me',headers=authorization_header)
         
         
@@ -100,8 +101,10 @@ def create_app(test_config=None):
         sessions[random_code]["songs"] = deque()
         sessions[random_code]["api_token"]=res.json()['access_token']
         sessions[random_code]["refresh_token"]=res.json()['refresh_token']
-        
-        print(userInformation.json())
+
+        create_playlist = "{\"name\":\"BeatQ\"}"
+        playlist_response = requests.post('https://api.spotify.com/v1/users/'+userInformation.json()["id"]+'/playlists',data=create_playlist,headers=authorization_header)
+        print(playlist_response.json())
         
         new_user = User(True, userInformation.json()["display_name"], random_code)
 
@@ -131,7 +134,8 @@ def create_app(test_config=None):
         res=requests.post('https://accounts.spotify.com/api/token',data=data)
         sessions[request.cookies.get('sessionID')]["api_token"]=res.json()["access_token"]
         print(res.json()["access_token"])
-        authorization_header = {"Authorization":"Bearer {}".format(sessions[request.cookies.get('sessionID')]["api_token"])}
+        authorization_header = {"Authorization":"Bearer {}".format(sessions[request.cookies.get('sessionID')]["api_token"]),
+                                "Content-Type":"application/json"}
         queryUrl = 'https://api.spotify.com/v1/search'
         queryUrl += '?q='+request.form['song']
         queryUrl += '&type=track'
