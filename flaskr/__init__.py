@@ -91,4 +91,20 @@ def create_app(test_config=None):
     def join():
         return render_template('join.html')
 
+    @app.route('/search',methods=["POST"])
+    def search():
+        data={
+            grant_type:'refresh_token',
+            refresh_token:session[request.cookies.get('sessionID')]
+        }
+        res=requests.post('https://accounts.spotify.com/api/token',data=data)
+        session[request.cookies.get('sessionID')]["api_token"]=res.json()["api_token"]
+        session[request.cookies.get('sessionID')]["refresh_token"]=res.json()["refresh_token"]
+        authorization_header = {"Authorization":"Bearer {}".format(session[request.cookies.get('sessionID')]["refresh_token"])}
+        queryUrl = 'https://api.spotify.com/v1/search'
+        queryUrl += '?q='+request.form['query']
+        queryUrl += '&type=track%2Cartist'
+        queryUrl += '&limit=10'
+        song_list = requests.get(queryUrl,headers=authorization_header)
+        return render_template('search.html',song_list=song_list)
     return app
