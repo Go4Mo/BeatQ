@@ -1,9 +1,9 @@
 import os
 import requests
-from flask import Flask, render_template, redirect, request
+from flask import Flask, render_template, redirect, request, session, url_for, escape
 from flaskr.User import User
 from flaskr.extra_funcs import *
-from flaskr.Session import *
+from collections import deque
 
 def create_app(test_config=None):
     # create and configure the app
@@ -12,6 +12,7 @@ def create_app(test_config=None):
         SECRET_KEY='dev',
         DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
     )
+    app.SECRET_KEY = rand_code()
 
     if test_config is None:
         # load the instance config, if it exists, when not testing
@@ -67,6 +68,10 @@ def create_app(test_config=None):
                 'client_secret':'8c68f3903c78478ea18f9d18a79c7d13'
         }
         random_code = rand_code()
+        Session[random_code] = dict()
+        Session[random_code]["host"] = "temp"
+        Session[random_code]["users"] = dict()
+        Session[random_code]["songs"] = deque()
         res = requests.post(tokenUrl,data=data)
         authorization_header = {"Authorization":"Bearer {}".format(res.json()['access_token'])}
         userInformation = requests.get('https://api.spotify.com/v1/me',headers=authorization_header)
