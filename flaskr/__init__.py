@@ -1,6 +1,6 @@
 import os
 import requests
-from flask import Flask, render_template, redirect, request, session, url_for, escape
+from flask import Flask, render_template, redirect, request, session, url_for, escape, make_response
 from flaskr.User import User
 from flaskr.extra_funcs import *
 from collections import deque
