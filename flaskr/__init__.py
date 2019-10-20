@@ -5,6 +5,8 @@ from flaskr.User import User
 from flaskr.extra_funcs import *
 from collections import deque
 
+sessions = dict()
+
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
@@ -36,11 +38,12 @@ def create_app(test_config=None):
 
     @app.route('/join_data', methods=["POST"])
     def join_data():
-        print("Hello world")
+        global sessions
+
         name = request.form['username']
         activation_code = request.form['code']
-        
-        if validate_code(activation_code):
+
+        if activation_code in sessions:
             new_user = User(False, name, session)
             return render_template('home.html')
         else:
@@ -57,8 +60,8 @@ def create_app(test_config=None):
         return redirect(oauthUrl,code=302)
 
     @app.route('/spotifyCallback', methods=['GET','POST'])
-    def spotifyAuthCallback():
-        
+    def spotifyAuthCallback():      
+        global sessions  
 
         code = request.args.get('code')
         tokenUrl = 'https://accounts.spotify.com/api/token'
@@ -74,8 +77,8 @@ def create_app(test_config=None):
         
         
         random_code = rand_code()
-        session[random_code] = dict()
-        session[random_code]["host"] = userInformation.json()["display_name"]
+        sessions[random_code] = dict()
+        sessions[random_code]["host"] = userInformation.json()["display_name"]
         
         print(userInformation.json())
         resp = make_response(render_template('host.html', random_code = random_code))
