@@ -108,6 +108,7 @@ def create_app(test_config=None):
         create_playlist = "{\"name\":\"BeatQ "+random_code+"\"}"
         playlist_response = requests.post('https://api.spotify.com/v1/users/'+userInformation.json()["id"]+'/playlists',data=create_playlist,headers=authorization_header)
         print(playlist_response.json())
+        sessions[random_code]["playlist_id"]=playlist_response.json()["id"]
         
         new_user = User(True, userInformation.json()["display_name"], random_code)
         sessions[random_code]["users"].append(new_user)
